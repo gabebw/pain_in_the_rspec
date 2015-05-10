@@ -3,24 +3,66 @@ require "stringio"
 
 describe PainInTheRspec::Formatter do
   let(:output) { StringIO.new }
+  let(:original) { "rspec" }
+  let(:pun_of_original) { "pain in the neck" }
+
+  before do
+    setup_reporter
+  end
 
   it "prints out a pun when an example fails" do
-    pundit = instance_double(PainInTheRspec::Pundit)
-    allow(pundit).to receive(:pun).and_return("pain in the neck")
-    allow(PainInTheRspec::Pundit).to receive(:new).with("rspec").and_return(pundit)
+    stub_pun(original => pun_of_original)
 
-    example = double(
-      "example",
-      description: "rspec",
-      execution_result: execution_result(status: :failed, exception: Exception.new)
+    send_notification(
+      :example_failed,
+      example_notification(failed_example(original))
     )
 
-    allow(RSpec.configuration).to receive(:color_enabled?).and_return(false)
-    setup_reporter
+    expect(output.string).to include pun_of_original
+  end
 
-    send_notification(:example_failed, example_notification(example))
+  it "prints out a pun when an example passes" do
+    stub_pun(original => pun_of_original)
 
-    expect(output.string).to include "pain in the neck"
+    send_notification(
+      :example_passed,
+      example_notification(passed_example(original))
+    )
+
+    expect(output.string).to include pun_of_original
+  end
+
+  it "prints out a pun when an example is pending" do
+    stub_pun(original => pun_of_original)
+
+    send_notification(
+      :example_pending,
+      example_notification(pending_example(original))
+    )
+
+    expect(output.string).to include pun_of_original
+  end
+
+  def passed_example(description)
+    generic_example(description, :passed)
+  end
+
+  def pending_example(description)
+    generic_example(description, :pending)
+  end
+
+  def failed_example(description)
+    generic_example(description, :failed).tap do |example|
+      example.execution_result.exception = Exception.new
+    end
+  end
+
+  def generic_example(description, status)
+    double(
+      "example",
+      description: description,
+      execution_result: execution_result(status: status)
+    )
   end
 
   def execution_result(values)
@@ -29,49 +71,44 @@ describe PainInTheRspec::Formatter do
     end
   end
 
+  def send_notification(type, notification)
+    reporter.notify(type, notification)
+  end
+
   def example_notification(example)
     ::RSpec::Core::Notifications::ExampleNotification.for example
   end
 
-  def new_example(description, metadata = {})
-    metadata = metadata.dup
-    result = RSpec::Core::Example::ExecutionResult.new
-    result.started_at = ::Time.now
-    result.record_finished(metadata.delete(:status) { :passed }, ::Time.now)
-    result.exception = Exception.new if result.status == :failed
-
-    instance_double(
-      RSpec::Core::Example,
-      description: description,
-      full_description: description,
-      execution_result: result,
-      location: "",
-      location_rerun_argument: "",
-      metadata: { shared_group_inclusion_backtrace: [] }.merge(metadata)
-    )
+  def formatter
+    @formatter ||= config.formatters.first
   end
 
-  def formatter
-    @formatter ||= setup_reporter
+  def reporter
+    @reporter
   end
 
   def setup_reporter
-    config.add_formatter described_class
-    @reporter = config.reporter
-    config.formatters.first
+    @reporter = begin
+      config.add_formatter described_class
+      config.reporter
+    end
   end
 
-  def send_notification(type, notification)
-    @reporter.notify(type, notification)
-  end
 
   def config
-    @configuration ||=
-      begin
-        config = RSpec::Core::Configuration.new
-        config.output_stream = output
-        config.color = false
-        config
-      end
+    @configuration ||= RSpec::Core::Configuration.new.tap do |config|
+      config.output_stream = output
+    end
+  end
+
+  def stub_pun(pun_hash)
+    original = pun_hash.keys.first
+    pun = pun_hash.values.first
+
+    pundit = instance_double(PainInTheRspec::Pundit)
+    allow(pundit).to receive(:pun).and_return(pun)
+    allow(PainInTheRspec::Pundit).to receive(:new).
+      with(original).
+      and_return(pundit)
   end
 end
