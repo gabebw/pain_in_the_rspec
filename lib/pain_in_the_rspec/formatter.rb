@@ -1,4 +1,5 @@
 require "rspec/core"
+require "pain_in_the_rspec"
 
 module PainInTheRspec
   class Formatter < RSpec::Core::Formatters::DocumentationFormatter
