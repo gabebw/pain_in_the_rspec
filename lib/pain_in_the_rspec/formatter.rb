@@ -1,5 +1,3 @@
-require "rspec/core/formatters/base_text_formatter"
-
 module PainInTheRspec
   class Formatter < RSpec::Core::Formatters::DocumentationFormatter
     RSpec::Core::Formatters.register self, :example_passed, :example_pending,
