@@ -1,3 +1,5 @@
+require "rspec/core"
+
 module PainInTheRspec
   class Formatter < RSpec::Core::Formatters::DocumentationFormatter
     RSpec::Core::Formatters.register self, :example_passed, :example_pending,
