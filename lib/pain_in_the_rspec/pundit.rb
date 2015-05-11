@@ -10,7 +10,7 @@ module PainInTheRspec
 
     def pun
       if found_pun?
-        found_pun.new_phrase + " " + filtered[1..-1].join(" ")
+        [found_pun.new_phrase, rest_of_phrase].join(" ").strip
       else
         "[pun of #{original}]"
       end
@@ -25,11 +25,28 @@ module PainInTheRspec
     end
 
     def found_pun
-      @found_pun ||= GirlsJustWantToHavePuns.pun(filtered.first)
+      @found_pun ||= GirlsJustWantToHavePuns.pun(pun_word) ||
+        GirlsJustWantToHavePuns.pun(singular_pun_word)
+    end
+
+    def pun_word
+      filtered.first
+    end
+
+    def singular_pun_word
+      pun_word.sub(/s$/, "")
     end
 
     def filtered
       original.split(" ") - BANNED_WORDS
+    end
+
+    def rest_of_phrase
+      if filtered.size > 0
+        filtered[1..-1].join(" ")
+      else
+        ""
+      end
     end
   end
 end
