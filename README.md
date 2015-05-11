@@ -37,7 +37,12 @@ for each example in your suite.
 If you're using WebMock, you'll need to allow external network requests:
 
 ```ruby
+# Allow all network requests:
 WebMock.allow_net_connect!
+# Or, to only allow the website that this gem uses:
+WebMock.disable_net_connect!(allow: "rhymebrain.com")
+# Or, if you're already allowing example.com:
+WebMock.disable_net_connect!(allow: ["example.com", "rhymebrain.com"])
 ```
 
 ## Development
