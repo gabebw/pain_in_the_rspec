@@ -19,14 +19,22 @@ describe PainInTheRspec::Pundit do
       expect(GirlsJustWantToHavePuns).to have_received(:pun)
     end
 
-    it "only uses the first non-filtered word" do
+    it "only puns on the first non-filtered word" do
       original = "hello there how are you"
       pundit = described_class.new(original)
-      stub_pun
+      stub_pun_with("yellow")
 
-      pundit.pun
+      result = pundit.pun
 
-      expect(GirlsJustWantToHavePuns).to have_received(:pun).with("hello")
+      expect(result).to eq "yellow there how are you"
+    end
+
+    it "uses [pun of X] when there is no pun" do
+      stub_no_pun_result
+      original = "hello"
+      pundit = described_class.new(original)
+
+      expect(pundit.pun).to eq "[pun of #{original}]"
     end
 
     context "filtering" do
@@ -46,5 +54,19 @@ describe PainInTheRspec::Pundit do
 
   def stub_pun
     allow(GirlsJustWantToHavePuns).to receive(:pun).and_call_original
+  end
+
+  def stub_pun_with(result)
+    pun = GirlsJustWantToHavePuns::Pun.new(
+      result,
+      "whatever",
+      "some category"
+    )
+
+    allow(GirlsJustWantToHavePuns).to receive(:pun).and_return(pun)
+  end
+
+  def stub_no_pun_result
+    allow(GirlsJustWantToHavePuns).to receive(:pun).and_return(nil)
   end
 end
