@@ -29,6 +29,17 @@ To always run your specs with PainInTheRspec, add the following line to your
 
     --format PainInTheRspec::Formatter
 
+## Pitfalls
+
+The formatter uses a web API to get rhymes. It will therefore make a web request
+for each example in your suite.
+
+If you're using WebMock, you'll need to allow external network requests:
+
+```ruby
+WebMock.allow_net_connect!
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run
