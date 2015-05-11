@@ -19,6 +19,16 @@ describe PainInTheRspec::Pundit do
       expect(GirlsJustWantToHavePuns).to have_received(:pun)
     end
 
+    it "only uses the first non-filtered word" do
+      original = "hello there how are you"
+      pundit = described_class.new(original)
+      stub_pun
+
+      pundit.pun
+
+      expect(GirlsJustWantToHavePuns).to have_received(:pun).with("hello")
+    end
+
     context "filtering" do
       %w(should can and).each do |word|
         it "filters out '#{word}'" do

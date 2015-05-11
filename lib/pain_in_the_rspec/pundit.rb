@@ -9,7 +9,7 @@ module PainInTheRspec
     end
 
     def pun
-      GirlsJustWantToHavePuns.pun(filtered.join(" ")).new_phrase
+      GirlsJustWantToHavePuns.pun(filtered.first).new_phrase
     end
 
     private
