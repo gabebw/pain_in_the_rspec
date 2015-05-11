@@ -26,7 +26,8 @@ module PainInTheRspec
 
     def found_pun
       @found_pun ||= GirlsJustWantToHavePuns.pun(pun_word) ||
-        GirlsJustWantToHavePuns.pun(singular_pun_word)
+        GirlsJustWantToHavePuns.pun(singular_pun_word) ||
+        GirlsJustWantToHavePuns.pun(other_singular_pun_word)
     end
 
     def pun_word
@@ -35,6 +36,10 @@ module PainInTheRspec
 
     def singular_pun_word
       pun_word.sub(/s$/, "")
+    end
+
+    def other_singular_pun_word
+      pun_word.sub(/es$/, "")
     end
 
     def filtered

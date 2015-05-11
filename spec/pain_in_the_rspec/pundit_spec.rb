@@ -36,6 +36,18 @@ describe PainInTheRspec::Pundit do
       expect(pundit.pun).to eq "scrapple"
     end
 
+    it "singularizes words ending in -es too" do
+      stub_pun_results(
+        "presses" => nil,
+        "presse" => nil,
+        "press" => "dress"
+      )
+
+      pundit = described_class.new("presses")
+
+      expect(pundit.pun).to eq "dress"
+    end
+
     it "uses [pun of X] when there is no pun" do
       stub_no_pun_result
       original = "hello"
