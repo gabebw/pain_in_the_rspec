@@ -34,12 +34,11 @@ To always run your specs with PainInTheRspec, add the following line to your
 The formatter uses a web API to get rhymes. It will therefore make a web request
 for each example in your suite.
 
-If you're using WebMock, you'll need to allow external network requests:
+If you're using WebMock, you'll need to allow external network requests to
+`rhymebrain.com`, which this gem uses:
 
 ```ruby
-# Allow all network requests:
-WebMock.allow_net_connect!
-# Or, to only allow the website that this gem uses:
+# To only allow rhymebrain.com
 WebMock.disable_net_connect!(allow: "rhymebrain.com")
 # Or, if you're already allowing example.com:
 WebMock.disable_net_connect!(allow: ["example.com", "rhymebrain.com"])
