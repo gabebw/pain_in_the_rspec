@@ -18,6 +18,16 @@ Or install it yourself as:
 
     $ gem install pain_in_the_rspec
 
+## Example output
+
+```
+PainInTheRspec::Pundit
+  #pun
+    wild-use chase Girls Just Want to Have Puns
+    he who generates is lost a pun
+    Sgt. Pepper's only Hearts Club Band puns on the first non-filtered word
+```
+
 ## Usage
 
 Run your specs like this:
