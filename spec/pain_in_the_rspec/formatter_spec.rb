@@ -61,6 +61,7 @@ describe PainInTheRspec::Formatter do
     double(
       "example",
       description: description,
+      full_description: description,
       execution_result: execution_result(status: status)
     )
   end
