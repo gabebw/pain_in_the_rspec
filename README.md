@@ -1,5 +1,7 @@
 # A Real Pain in the RSpec
 
+[![Build Status](https://travis-ci.org/gabebw/pain_in_the_rspec.svg?branch=master)](https://travis-ci.org/gabebw/pain_in_the_rspec)
+
 Run your RSpec tests and print out punny spec descriptions.
 
 ## Installation
